@@ -61,7 +61,8 @@ class RefreshAPIView(APIView):
         id = decode_refresh_token(refresh_token)
         access_token = create_access_token(id)
         return Response({
-            'token': access_token
+            'token': access_token,
+            'refresh token' : refresh_token
         })
 
 
