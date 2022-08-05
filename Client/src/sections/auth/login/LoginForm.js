@@ -39,7 +39,25 @@ export default function LoginForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(url, JSON.stringify({ email, password }), {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+      });
+    } catch (err) {
+      if (!err?.response) {
+        console.log('No Server Response');
+      } else if (err.response?.status === 404) {
+        console.log('User not found');
+      } else {
+        console.log(err);
+      }
+    }
+    document.cookie = 'Set-Cookie:email=email;Secure;HttpOnly;SameSite=Strict;Max-Age=86400';
+    document.cookie = 'Set-Cookie:password=password;Secure;HttpOnly;SameSite=Strict;Max-Age=86400';
+
     navigate('/dashboard', { replace: true });
   };
 

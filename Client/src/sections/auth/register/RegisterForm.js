@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
+import env from 'react-dotenv';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 // form
 import { useForm } from 'react-hook-form';
@@ -15,7 +17,7 @@ import { FormProvider, RHFTextField } from '../../../components/hook-form';
 
 export default function RegisterForm() {
   const navigate = useNavigate();
-
+  const url = env.BACKEND_URL;
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
@@ -42,7 +44,24 @@ export default function RegisterForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async () => {
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const name = firstName + ' ' + lastName;
+      const response = await axios.post(url, JSON.stringify({ name, email, password }), {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+      });
+      console.log(response);
+    } catch (err) {
+      if (!err?.response) {
+        console.log('No Server Response');
+      } else if (err.response?.status === 409) {
+        console.log('Username Taken');
+      } else {
+        console.log('Registration Failed');
+      }
+    }
     navigate('/dashboard', { replace: true });
   };
 
