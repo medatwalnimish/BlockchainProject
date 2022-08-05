@@ -17,19 +17,19 @@ import { FormProvider, RHFTextField } from '../../../components/hook-form';
 
 export default function RegisterForm() {
   const navigate = useNavigate();
-  const url = env.BACKEND_URL + '/api/register';
+  const url = `${env.REACT_APP_BACKEND_URL}/api/register`;
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
-    firstName: Yup.string().required('First name required'),
-    lastName: Yup.string().required('Last name required'),
+    name: Yup.string().required('First name required'),
+    // lastName: Yup.string().required('Last name required'),
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required'),
   });
 
   const defaultValues = {
-    firstName: '',
-    lastName: '',
+    name: '',
+    // lastName: '',
     email: '',
     password: '',
   };
@@ -44,33 +44,36 @@ export default function RegisterForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const name = firstName + ' ' + lastName;
-      const response = await axios.post(url, JSON.stringify({ name, email, password }), {
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true,
-      });
-      console.log(response);
-    } catch (err) {
-      if (!err?.response) {
-        console.log('No Server Response');
-      } else if (err.response?.status === 409) {
-        console.log('Username Taken');
-      } else {
-        console.log('Registration Failed');
-      }
-    }
-    navigate('/dashboard', { replace: true });
+  const onSubmit = async (data) => {
+    axios.post(url, data).then((res) => {
+      console.log(res);
+    });
+    // try {)
+    //   // const name = data.firstName + ' ' + data.lastName;
+    //   // data.name = name;
+    //   const response = await axios.post(url, JSON.stringify({ data }), {
+    //     headers: { 'Content-Type': 'application/json' },
+    //     withCredentials: true,
+    //   });
+    //   console.log(response);
+    // } catch (err) {
+    //   if (!err?.response) {
+    //     console.log('No Server Response');
+    //   } else if (err.response?.status === 409) {
+    //     console.log('Username Taken');
+    //   } else {
+    //     console.log('Registration Failed');
+    //   }
+    // }
+    navigate('/login', { replace: true });
   };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <RHFTextField name="firstName" label="First name" />
-          <RHFTextField name="lastName" label="Last name" />
+          <RHFTextField name="name" label="Name" />
+          {/* <RHFTextField name="lastName" label="Last name" /> */}
         </Stack>
 
         <RHFTextField name="email" label="Email address" />
