@@ -17,7 +17,7 @@ import { FormProvider, RHFTextField } from '../../../components/hook-form';
 
 export default function RegisterForm() {
   const navigate = useNavigate();
-  const url = env.BACKEND_URL;
+  const url = env.BACKEND_URL + '/api/register';
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
