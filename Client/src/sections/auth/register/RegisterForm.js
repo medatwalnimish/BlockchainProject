@@ -17,7 +17,7 @@ import { FormProvider, RHFTextField } from '../../../components/hook-form';
 
 export default function RegisterForm() {
   const navigate = useNavigate();
-  const url = `${env.REACT_APP_BACKEND_URL}/api/register`;
+  const url = `http://localhost:8000/api/register`;
   const [showPassword, setShowPassword] = useState(false);
 
   const RegisterSchema = Yup.object().shape({
@@ -45,9 +45,14 @@ export default function RegisterForm() {
   } = methods;
 
   const onSubmit = async (data) => {
-    axios.post(url, data).then((res) => {
-      console.log(res);
-    });
+    axios
+      .post(url, data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     // try {)
     //   // const name = data.firstName + ' ' + data.lastName;
     //   // data.name = name;
