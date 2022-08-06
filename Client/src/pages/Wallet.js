@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import logo from '../components/Logo';
 import walletstyle from '../sections/styles/wallet.module.css';
 
-function App() {
+function Wallet() {
   const [haveMetamask, sethaveMetamask] = useState(true);
   const [accountAddress, setAccountAddress] = useState('');
   const [accountBalance, setAccountBalance] = useState('');
@@ -41,6 +41,32 @@ function App() {
     }
   };
 
+  const sendMoney = async () => {
+    try {
+      if (!ethereum) {
+        sethaveMetamask(false);
+      }
+      const accounts = await ethereum.request({
+        method: 'eth_requestAccounts',
+      });
+      await ethereum.enable();
+
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const params = [
+        {
+          from: accounts[0],
+          to: '0x6FEAEAd7b6a0D85D83130DEbB8C77048B0CAdaFC',
+          value: ethers.utils.parseUnits(0.01, 'ether').toHexString(),
+        },
+      ];
+
+      const transactionHash = await provider.send('eth_sendTransaction', params);
+      console.log(transactionHash);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <div className={walletstyle.App}>
       <header className={walletstyle.Appheader}>
@@ -74,9 +100,13 @@ function App() {
         ) : (
           <p>Please Install MataMask</p>
         )}
+
+        <button className={walletstyle.btn} onClick={sendMoney}>
+          Send Money
+        </button>
       </header>
     </div>
   );
 }
 
-export default App;
+export default Wallet;
