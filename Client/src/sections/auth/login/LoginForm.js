@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
+import axios from 'axios';
+import env from 'react-dotenv';
 import { useNavigate } from 'react-router-dom';
 // form
 import { useForm } from 'react-hook-form';
@@ -15,7 +17,7 @@ import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hoo
 
 export default function LoginForm() {
   const navigate = useNavigate();
-  const url = env.BACKEND_URL + '/api/login';
+  const url = `http://localhost:8000/api/login`;
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
@@ -39,26 +41,34 @@ export default function LoginForm() {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(url, JSON.stringify({ email, password }), {
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true,
-      });
-    } catch (err) {
-      if (!err?.response) {
-        console.log('No Server Response');
-      } else if (err.response?.status === 404) {
-        console.log('User not found');
-      } else {
+  const onSubmit = async (data) => {
+    axios
+      .post(url, data)
+      .then((res) => {
+        const token = res.data.token;
+        document.cookie = `auth=${token}`;
+        // document.cookie = 'Set-Cookie:password=password;Secure;HttpOnly;SameSite=Strict;Max-Age=86400';
+        console.log(res.data);
+      })
+      .catch((err) => {
         console.log(err);
-      }
-    }
-    document.cookie = 'Set-Cookie:email=email;Secure;HttpOnly;SameSite=Strict;Max-Age=86400';
-    document.cookie = 'Set-Cookie:password=password;Secure;HttpOnly;SameSite=Strict;Max-Age=86400';
+      });
+    // try {
+    //   const response = await axios.post(url, JSON.stringify({ data }), {
+    //     headers: { 'Content-Type': 'application/json' },
+    //     withCredentials: true,
+    //   });
+    // } catch (err) {
+    //   if (!err?.response) {
+    //     console.log('No Server Response');
+    //   } else if (err.response?.status === 404) {
+    //     console.log('User not found');
+    //   } else {
+    //     console.log(err);
+    //   }
+    // }
 
-    navigate('/dashboard', { replace: true });
+    navigate('/dashboard/app', { replace: true });
   };
 
   return (
