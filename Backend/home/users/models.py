@@ -22,3 +22,13 @@ class NFT_Details(models.Model):
     redeem = models.BooleanField(default=True)
     def str(self):
         return str(self.token_id)
+    
+class document(models.Model):
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE, default=0)
+    created_at = models.DateTimeField(default='')
+    updated_at = models.DateTimeField(default=timezone.now)
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=200,default='')
+    file_link = models.URLField(max_length = 300)
+    def str(self):
+        return str(self.token_id)
