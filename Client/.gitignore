@@ -1,5 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+
 #backend 
 REACT_APP_BACKEND_URL=http://localhost:8000
 # dependencies
@@ -14,6 +15,7 @@ REACT_APP_BACKEND_URL=http://localhost:8000
 /build
 
 # misc
+/public/env.js
 .DS_Store
 /.env
 /.env.local
