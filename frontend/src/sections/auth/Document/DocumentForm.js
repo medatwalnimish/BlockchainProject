@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 // form
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -11,11 +11,12 @@ import Web3 from 'web3';
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
-import abi from '../../../utils/abi/abi.json';
 
 // ----------------------------------------------------------------------
 
 export default function DocumentForm() {
+  const navigate = useNavigate();
+
   const DocumentSchema = Yup.object().shape({
     Name: Yup.string().required('Name required'),
     Discription: Yup.string().required('Discription required'),
@@ -27,34 +28,27 @@ export default function DocumentForm() {
     // defaultValues,
   });
 
+  const { handleSubmit } = methods;
+
   const onSubmit = async () => {
     window.web3 = new Web3(window.ethereum);
     const web3 = new Web3(window.ethereum);
-    const block = await web3.eth.getBlockNumber();
-    const address = '0x61C9bf144Dc61AC9112F6f1e999fB63bFccE6D0A';
-    const cert = new web3.eth.Contract(abi, address);
-    console.log(block);
-
-    const transaction = {
-      from: web3.eth.accounts[0],
-      to: address,
-      data: cert.methods.safeMint(web3.eth.accounts[0], '').encodeABI(),
-    };
-    await window.web3.eth
-      .sendTransaction(transaction)
-      .then((accounts) => {
-        console.log(accounts);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    const block = await web3.eth;
   };
 
   return (
-    <div>
-      <button onClick={onSubmit} type="submit">
-        Mint Nft
-      </button>
-    </div>
+    <FormProvider methods={methods} onSubmit={onSubmit}>
+      <Stack spacing={3}>
+        <RHFTextField name="Name" label="Name" />
+
+        <RHFTextField name="Description" label="Description" type="text" />
+
+        <RHFTextField name="Tags" label="Tags" />
+
+        <LoadingButton fullWidth size="large" type="submit" variant="contained">
+          Submit
+        </LoadingButton>
+      </Stack>
+    </FormProvider>
   );
 }
