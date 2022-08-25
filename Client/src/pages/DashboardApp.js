@@ -17,6 +17,8 @@ import {
   AppCurrentSubject,
   AppConversionRates,
 } from '../sections/@dashboard/app';
+import { RegisterForm } from '../sections/auth/register';
+import { DocumentForm } from '../sections/auth/Document/index';
 
 // ----------------------------------------------------------------------
 
@@ -30,6 +32,7 @@ export default function DashboardApp() {
           Hi, Welcome back
         </Typography>
 
+        <DocumentForm />
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
